@@ -4,7 +4,7 @@ description: A pure instrumental sci-fi album built around atmosphere, restraint
 tags: Instrumental, Sci-Fi, Ambient, Deep Space, Cinematic, Synthwave
 price_mp3: 2.99
 price_flac: 5.98
-buy_link: https://neonviceechos.gumroad.com/l/XXXXXX
+buy_link: https://neonviceechos.gumroad.com/l/hlcnnt
 audio_folder: Space Echoes
 
 ## 01 · Orbit of Stillness
