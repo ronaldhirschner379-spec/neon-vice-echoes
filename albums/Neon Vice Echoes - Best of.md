@@ -4,7 +4,7 @@ description: Not a greatest hits — an afterglow. A curated sequence of remixes
 tags: Best Of, Remix, Night Drive, Cyberpunk, Retrospective, Synthwave
 price_mp3: 2.99
 price_flac: 5.98
-buy_link: https://neonviceechos.gumroad.com/l/XXXXXX
+buy_link: https://neonviceechos.gumroad.com/l/ietns
 audio_folder: Neon Vice Echoes - Best of
 
 ## 01 · Boot Sequence
