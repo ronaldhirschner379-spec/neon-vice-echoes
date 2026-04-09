@@ -4,7 +4,7 @@ description: A cinematic 80s coastal-noir album of heat, vice, memory and neon r
 tags: Synthwave, Coastal Noir, 80s Cinema, Night Drive, Neon Romance, Cinematic
 price_mp3: 2.99
 price_flac: 5.98
-buy_link: https://neonviceechos.gumroad.com/l/XXXXXX
+buy_link: https://neonviceechos.gumroad.com/l/uyswfp
 audio_folder: Heat & Ocean Lights
 
 ## 01 · Boulevard of White Fire
