@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Neon Vice Echoes · Preview Player</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#050612;
+  --panel:#0e1228;
+  --accent:#00FFFF;
+  --rose:#FF00FF;
+  --teal:#00CED1;
+  --amber:#FFFF00;
+  --text:#f0eeff;
+  --soft:#a09cc0;
+  --border:rgba(0,206,209,0.2);
+}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{display:flex;flex-direction:column;align-items:center;padding:24px 16px 48px}
+
+.site-header{width:100%;max-width:860px;display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.logo-mark{display:flex;align-items:center;gap:12px}
+.logo-bars{display:flex;align-items:flex-end;gap:3px;height:28px}
+.logo-bars span{display:block;width:5px;border-radius:2px;background:var(--accent)}
+.logo-bars span:nth-child(1){height:12px;background:var(--accent)}
+.logo-bars span:nth-child(2){height:18px;background:var(--teal)}
+.logo-bars span:nth-child(3){height:24px;background:var(--rose)}
+.logo-bars span:nth-child(4){height:28px;background:var(--accent)}
+.logo-text{font-size:13px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent)}
+.logo-sub{font-size:10px;color:var(--soft);letter-spacing:0.1em;margin-top:2px}
+.preview-badge{font-size:10px;padding:4px 10px;border-radius:20px;border:1px solid var(--teal);color:var(--teal);letter-spacing:0.1em;text-transform:uppercase}
+
+.album-hero{width:100%;max-width:860px;border-radius:16px;background:linear-gradient(135deg,#0a0020,#001a1a);border:1px solid var(--border);padding:28px 28px 24px;margin-bottom:24px;display:flex;gap:24px;align-items:flex-start}
+.album-cover{width:100px;height:100px;border-radius:10px;background:linear-gradient(145deg,#1a0030,#001a20);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.album-cover svg{width:60px;height:60px}
+.album-info{flex:1;min-width:0}
+.album-title{font-size:20px;font-weight:500;letter-spacing:0.08em;color:var(--text);margin-bottom:4px}
+.album-sub{font-size:12px;color:var(--teal);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:10px}
+.album-desc{font-size:13px;color:var(--soft);line-height:1.6;margin-bottom:14px}
+.album-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:10px;padding:3px 8px;border-radius:20px;border:1px solid rgba(0,255,255,0.3);color:var(--accent);letter-spacing:0.08em}
+.tag.rose{border-color:rgba(255,0,255,0.3);color:var(--rose)}
+
+.buy-strip{width:100%;max-width:860px;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.buy-btn{display:flex;flex-direction:column;align-items:center;padding:14px;border-radius:12px;border:1px solid;cursor:pointer;text-decoration:none;transition:background 0.15s}
+.buy-btn.mp3{border-color:var(--teal);color:var(--teal);background:rgba(0,206,209,0.06)}
+.buy-btn.mp3:hover{background:rgba(0,206,209,0.14)}
+.buy-btn.flac{border-color:var(--rose);color:var(--rose);background:rgba(255,0,255,0.06)}
+.buy-btn.flac:hover{background:rgba(255,0,255,0.14)}
+.buy-price{font-size:22px;font-weight:500}
+.buy-label{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;margin-top:2px;opacity:0.8}
+.buy-hint{font-size:10px;opacity:0.6;margin-top:2px}
+
+.tracks-wrap{width:100%;max-width:860px}
+.section-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--soft);margin-bottom:12px}
+
+.track{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:border-color 0.15s}
+.track:hover{border-color:var(--teal)}
+.track.active{border-color:var(--accent)}
+.track-top{display:flex;align-items:center;gap:12px}
+.track-num{font-size:11px;color:var(--soft);letter-spacing:0.1em;width:20px;flex-shrink:0}
+.track-meta{flex:1;min-width:0}
+.track-name{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track-mood{font-size:11px;color:var(--soft);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.play-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--teal);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.15s}
+.play-btn:hover{background:rgba(0,206,209,0.15)}
+.play-btn svg{width:13px;height:13px;fill:var(--teal)}
+.track.active .play-btn{border-color:var(--accent)}
+.track.active .play-btn svg{fill:var(--accent)}
+
+.preview-expand{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.track.active .preview-expand{display:block}
+.preview-desc{font-size:12px;color:var(--soft);line-height:1.6;margin-bottom:10px}
+.progress-wrap{margin-bottom:6px}
+.progress-bar{height:3px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--accent));border-radius:2px;transition:width 0.8s linear}
+.progress-info{display:flex;justify-content:space-between;font-size:10px;color:var(--soft);margin-top:4px;letter-spacing:0.05em}
+.preview-note{font-size:10px;color:var(--soft);opacity:0.6;font-style:italic}
+
+.footer{margin-top:40px;text-align:center;font-size:11px;color:var(--soft);opacity:0.6;letter-spacing:0.08em}
+
+@media(max-width:600px){
+  .album-hero{flex-direction:column}
+  .album-cover{width:80px;height:80px}
+  .album-title{font-size:16px}
+  .buy-strip{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo-mark">
+    <div class="logo-bars">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div>
+      <div class="logo-text">Neon Vice Echoes</div>
+      <div class="logo-sub">by Ronald Hirschner</div>
+    </div>
+  </div>
+  <div class="preview-badge">Free Preview</div>
+</header>
+
+<div class="album-hero">
+  <div class="album-cover">
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="36" width="7" height="18" rx="2" fill="#00FFFF" opacity="0.9"/>
+      <rect x="14" y="26" width="7" height="28" rx="2" fill="#00CED1" opacity="0.9"/>
+      <rect x="24" y="16" width="7" height="38" rx="2" fill="#FF00FF" opacity="0.9"/>
+      <rect x="34" y="8" width="7" height="46" rx="2" fill="#00FFFF" opacity="0.9"/>
+      <rect x="44" y="20" width="7" height="34" rx="2" fill="#00CED1" opacity="0.9"/>
+      <line x1="4" y1="56" x2="56" y2="56" stroke="rgba(0,206,209,0.4)" stroke-width="1"/>
+    </svg>
+  </div>
+  <div class="album-info">
+    <div class="album-title">After Midnight Instrumentals</div>
+    <div class="album-sub">Coastal Noir Collection · 8 Tracks</div>
+    <div class="album-desc">A pure instrumental coastal-noir album built from analog hooks, neon reflection, black-water pursuit, rain-slicked motion and the bittersweet release of first light.</div>
+    <div class="album-tags">
+      <span class="tag">Synthwave</span>
+      <span class="tag">Instrumental</span>
+      <span class="tag rose">Coastal Noir</span>
+      <span class="tag">Night Drive</span>
+      <span class="tag rose">80s Cinema</span>
+    </div>
+  </div>
+</div>
+
+<div class="buy-strip">
+  <a class="buy-btn mp3" href="https://ronaldhirschner.gumroad.com" target="_blank">
+    <span class="buy-price">$2.99</span>
+    <span class="buy-label">MP3 · 320kbps</span>
+    <span class="buy-hint">Instant download</span>
+  </a>
+  <a class="buy-btn flac" href="https://ronaldhirschner.gumroad.com" target="_blank">
+    <span class="buy-price">$5.98</span>
+    <span class="buy-label">FLAC · Lossless</span>
+    <span class="buy-hint">Audiophile quality</span>
+  </a>
+</div>
+
+<div class="tracks-wrap">
+  <div class="section-label">Preview · 90 seconds per track</div>
+  <div id="trackList"></div>
+</div>
+
+<div class="footer">© 2026 · Neon Vice Echoes · Ronald Hirschner · All rights reserved</div>
+
+<script>
+const tracks = [
+  {num:"01", name:"Ocean Drive After Midnight", mood:"Skyline glow · wet asphalt · first surge of velocity", desc:"The world-opener of the record — neon reflections, dark water, fast-car momentum and that instant feeling of stepping into a late-night coastal crime universe before a single word is spoken."},
+  {num:"02", name:"Vice Unit 3AM", mood:"Night-patrol tension · radio-static urgency · chrome pulse", desc:"A sharper, more tactical cut. Empty boulevards, covert movement and humid police-pressure — built for those moments when the city feels all chrome, pulse and controlled risk."},
+  {num:"03", name:"Marina Pursuit", mood:"Black-water speed · harbor lights · moonlit danger", desc:"Speedboats, black water, elegant tension and polished danger. Luxury nightlife tipping over into action under moonlit harbor haze."},
+  {num:"04", name:"Neon Rain Interceptor", mood:"Rain-noir melancholy · motel-light glow · lonely beauty", desc:"The vulnerable rain-track of the album. Wet streets, fading signs, restrained motion and that cool loneliness only a city at 2AM can hold."},
+  {num:"05", name:"Biscayne Dawn Run", mood:"Pink-gold horizon · ocean air · morning catharsis", desc:"One of the emotional centerpieces. Open-road catharsis, sunrise glow and bruised but beautiful forward motion — trading midnight tension for the first huge release of light."},
+  {num:"06", name:"Causeway Gold", mood:"Amber lift · wide causeway · victorious ache", desc:"A dawn-drive hymn in motion. The coastal route becomes something almost redemptive — glowing with salt-air release and morning fire."},
+  {num:"07", name:"First Light on Collins", mood:"Pastel skyline · fading neon · soft tender dawn", desc:"The tender sunrise piece: smoother, more reflective and quietly luxurious. That delicate hour when neon is still alive but the day approaches with all its truth."},
+  {num:"08", name:"Horizon in the Rearview", mood:"Departure · grace · skyline memory · closing credits", desc:"The true closing credits. Not tragic, not clean — deeply melodic, open and dignified as the city recedes behind you."}
+];
+
+let activeIdx = null;
+let timer = null;
+let seconds = 0;
+
+function buildTracks(){
+  const list = document.getElementById('trackList');
+  list.innerHTML = tracks.map((t,i) => `
+    <div class="track" id="track-${i}" onclick="toggleTrack(${i})">
+      <div class="track-top">
+        <div class="track-num">${t.num}</div>
+        <div class="track-meta">
+          <div class="track-name">${t.name}</div>
+          <div class="track-mood">${t.mood}</div>
+        </div>
+        <div class="play-btn" id="playbtn-${i}">
+          <svg id="icon-${i}" viewBox="0 0 13 13"><polygon points="2,1 12,6.5 2,12"/></svg>
+        </div>
+      </div>
+      <div class="preview-expand">
+        <div class="preview-desc">${t.desc}</div>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" id="fill-${i}"></div></div>
+          <div class="progress-info">
+            <span id="elapsed-${i}">0:00</span>
+            <span>0:90 preview</span>
+          </div>
+        </div>
+        <div class="preview-note">* Preview simulation — purchase for full tracks</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleTrack(i){
+  if(activeIdx === i){ stopAll(); return; }
+  stopAll();
+  activeIdx = i;
+  seconds = 0;
+  document.getElementById('track-'+i).classList.add('active');
+  document.getElementById('icon-'+i).innerHTML = '<rect x="1" y="1" width="4" height="11" rx="1"/><rect x="8" y="1" width="4" height="11" rx="1"/>';
+  runTimer(i);
+}
+
+function runTimer(i){
+  timer = setInterval(()=>{
+    seconds++;
+    const pct = Math.round((seconds/90)*100);
+    document.getElementById('fill-'+i).style.width = pct+'%';
+    const s = seconds%60;
+    const m = Math.floor(seconds/60);
+    document.getElementById('elapsed-'+i).textContent = m+':'+(s<10?'0':'')+s;
+    if(seconds >= 90) stopAll();
+  }, 1000);
+}
+
+function stopAll(){
+  clearInterval(timer);
+  if(activeIdx !== null){
+    document.getElementById('track-'+activeIdx).classList.remove('active');
+    document.getElementById('fill-'+activeIdx).style.width='0%';
+    document.getElementById('elapsed-'+activeIdx).textContent='0:00';
+    document.getElementById('icon-'+activeIdx).innerHTML='<polygon points="2,1 12,6.5 2,12"/>';
+  }
+  activeIdx = null;
+  seconds = 0;
+}
+
+buildTracks();
+</script>
+</body>
+</html>
